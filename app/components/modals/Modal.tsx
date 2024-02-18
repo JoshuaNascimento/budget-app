@@ -14,7 +14,7 @@ interface ModalProps {
   actionLabel: string;
   disabled?: boolean;
   secondaryAction?: () => BodyInit;
-  secondaryLabel?: string;
+  secondaryActionLabel?: string;
 }
 
 const Modals: React.FC<ModalProps> = ({
@@ -27,7 +27,7 @@ const Modals: React.FC<ModalProps> = ({
   actionLabel,
   disabled,
   secondaryAction,
-  secondaryLabel,
+  secondaryActionLabel,
 
 }) => {
 
@@ -157,7 +157,7 @@ const Modals: React.FC<ModalProps> = ({
             </div>
             {/* BODY */}
             <div className="relative p-6 flex-auto">
-
+              {body}
             </div>
             {/* FOOTER */}
             <div className="flex flex-col gap-2 p-6">
@@ -170,8 +170,20 @@ const Modals: React.FC<ModalProps> = ({
                   w-full
                 "
               >
+                {/* Conditionally render button if Modal has secondary action props */}
+                { secondaryAction && secondaryActionLabel && (
+                  <Button 
+                    outline
+                    disabled={disabled}
+                    label={secondaryActionLabel}
+                    onClick={handleSecondaryAction}
+                  />
+                )}
+
                 <Button 
-                  label = "My Button"
+                  disabled={disabled}
+                  label={actionLabel}
+                  onClick={handleSubmit}
                 />
               </div>
             </div>
