@@ -5,6 +5,7 @@ import "./globals.css";
 import ClientsOnly from "./components/ClientsOnly";
 import Navbar from "./components/navbar/Navbar";
 import RegisterModal from "./components/modals/RegisterModal";
+import ToasterProvider from "./providers/ToasterProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ClientsOnly>
+          <ToasterProvider />
           <RegisterModal />
           <Navbar />
         </ClientsOnly>
