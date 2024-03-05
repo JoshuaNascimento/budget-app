@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// Use 'npx prisma db push' to update the scheme of our database
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(auto()) @map("_id")  @db.ObjectId // Every model in DB must have this type of ID so we write it once and copy for others
+  name String?
+  email String? @unique // Optional email param with unique tag to prevent duplicates
+  emailVerified DateTime?
+  hashedPassword String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  //favoriteIds String[] @db.ObjectId Video specific variable
+
+  socialAccounts SocialAccount[]
+  accounts Account[]
+  transactions Transaction[]
+}
+
+model SocialAccount {
+  id String @id @default(auto()) @map("_id")  @db.ObjectId
+  userId String @db.ObjectId
+  type String
+  provider String
+  providerAccountId String
+  refresh_token String? @db.String
+  access_token String? @db.String
+  expires_at Int?
+  token_type String?
+  scope String?
+  id_token String? @db.String
+  session_state String?
+
+  // Create a relation with the User model using the userId field of Account to reference to the id field of User model
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
+
+  // Using double @@ we specify we require a unique combination of both fields
+  @@unique([provider, providerAccountId])
+}
+
+model Account {
+  id String @id @default(auto()) @map("_id")  @db.ObjectId
+  title String
+  description String
+  createdAt DateTime @default(now())
+  balance Float
+  userId String @db.ObjectId
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  transactions Transaction[]
+}
+
+model Transaction {
+  id String @id @default(auto()) @map("_id")  @db.ObjectId
+  userId String @db.ObjectId
+  accountId String @db.ObjectId
+  date DateTime
+  description String
+  amount Float
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
