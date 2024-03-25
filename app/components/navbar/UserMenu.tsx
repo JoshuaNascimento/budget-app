@@ -4,9 +4,19 @@ import { useCallback, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import MenuItem from "./MenuItem";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
+import useLoginModal from "@/app/hooks/useLoginModal";
+import { User } from "@prisma/client";
+import { signOut } from "next-auth/react";
 
-const UserMenu = () => {
+interface UserMenuProps {
+  currentUser?: User | null
+}
+
+const UserMenu: React.FC<UserMenuProps> = ({
+  currentUser
+}) => {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = useCallback(() => {
@@ -70,9 +80,30 @@ const UserMenu = () => {
           "
         >
           <div className="flex flex-col cursor-pointer">
+            {/* Conditional Render if user is logged in */}
+            {currentUser? (
             <>
               <MenuItem
                 onClick={() => {}}
+                label='Dashboard'
+              />
+              <MenuItem
+                onClick={() => {}}
+                label='Expenses'
+              />
+              <MenuItem
+                onClick={() => {}}
+                label='Budget Goals'
+              />
+              <MenuItem
+                onClick={() => signOut()}
+                label='Logout'
+              />
+            </>
+            ) : (
+            <>
+              <MenuItem
+                onClick={loginModal.onOpen}
                 label='Login'
               />
               <MenuItem
@@ -80,6 +111,7 @@ const UserMenu = () => {
                 label='Sign up'
               />
             </>
+            )}
           </div>
 
         </div>
