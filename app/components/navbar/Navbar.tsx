@@ -2,6 +2,7 @@ import { User } from "@prisma/client";  // Generated when running 'npx prisma db
 import Container from "../Container";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
+import Categories from "./Categories";
 
 
 interface NavbarProps {
@@ -13,7 +14,7 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   
   return ( 
-    <div className=" fixed w-full bg-white z-10 shadow-s,">
+    <div className=" fixed w-full bg-white z-10 shadow-s, ">
       <div 
         className="
         py-4
@@ -35,6 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({
               <UserMenu currentUser={currentUser}/>
             </div>
         </Container>
+        <Categories/>
       </div>
     </div> 
   );

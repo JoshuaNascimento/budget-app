@@ -63,6 +63,11 @@ const LoginModal = () => {
       })
   }
 
+  const toggle = useCallback(() => {  // Function for switching between login and register modals
+    loginModal.onClose();
+    registerModal.onOpen();
+  }, [loginModal, registerModal])
+
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading 
@@ -114,17 +119,17 @@ const LoginModal = () => {
       >
         <div className='flex flex-row items-center gap-2 justify-center'>
           <div>
-            Already have an account?
+            New to Budge It?
           </div>
           <div 
-            onClick={loginModal.onClose}
+            onClick={toggle}
             className='
               text-neutral-800
               cursor-pointer
               hover:underline
             '
           >
-            Login
+            Create an account
           </div>
         </div>
       </div>
