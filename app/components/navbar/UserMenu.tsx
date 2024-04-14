@@ -5,8 +5,10 @@ import { AiOutlineMenu } from "react-icons/ai";
 import MenuItem from "./MenuItem";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
+import useUploadModal from "@/app/hooks/useUploadModal";
 import { User } from "@prisma/client";
 import { signOut } from "next-auth/react";
+
 
 interface UserMenuProps {
   currentUser?: User | null
@@ -17,16 +19,29 @@ const UserMenu: React.FC<UserMenuProps> = ({
 }) => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
+  const uploadModal = useUploadModal();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value)
   }, [])
+
+  // Check if user is logged in when they attempt to import a file
+  const onFileImport = useCallback(() => { 
+    if (!currentUser) {
+      return loginModal.onOpen();
+    }
+
+    // Open Upload Modal
+    uploadModal.onOpen();
+
+  }, [currentUser, loginModal, uploadModal]);
+
   return ( 
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
         <div
-          onClick={() => {}}
+          onClick={onFileImport}
           className="
           hidden
           md:block
@@ -40,7 +55,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
           cursor-pointer
           "
         >
-          Import File
+          Upload File
         </div>
         <div
           onClick={() => {toggleOpen()}}
@@ -88,8 +103,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 label='Dashboard'
               />
               <MenuItem
-                onClick={() => {}}
-                label='Expenses'
+                onClick={uploadModal.onOpen}
+                label='Upload File'
               />
               <MenuItem
                 onClick={() => {}}
