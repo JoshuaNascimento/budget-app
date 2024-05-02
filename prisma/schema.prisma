@@ -60,17 +60,18 @@ model Account {
   userId String @db.ObjectId
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
-  transactions Transaction[]
+  //transactions Transaction[]
 }
 
 model Transaction {
   id String @id @default(auto()) @map("_id")  @db.ObjectId
   userId String @db.ObjectId
-  accountId String @db.ObjectId
-  date DateTime
+  //accountId String @db.ObjectId
+  date DateTime @db.Date @default(now())
+  //date String // made string for now having issues with DateTime
   description String
   amount Float
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  //account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 }

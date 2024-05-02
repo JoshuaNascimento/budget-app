@@ -30,7 +30,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <ClientsOnly>
           <ToasterProvider />
-          <UploadModal />
+          <UploadModal currentUser={currentUser}/>
           <RegisterModal />
           <LoginModal />
           <Navbar currentUser={currentUser}/>

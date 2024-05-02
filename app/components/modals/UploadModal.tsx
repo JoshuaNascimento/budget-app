@@ -1,28 +1,68 @@
 'use client'
 
+
 import useUploadModal from "@/app/hooks/useUploadModal";
 import Modal from "./Modal";
 import Heading from "../Heading";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { FileInput, Label } from 'flowbite-react'
+import { FieldValues, useForm } from "react-hook-form";
+import * as Papa from 'papaparse';
+
 import toast from "react-hot-toast";
+
+import prisma from "@/app/libs/prismadb"
+import { User } from "@prisma/client";
+import credentials from "next-auth/providers/credentials";
+import axios from "axios";
+import { transcode } from "buffer";
+
 
 enum STEPS {
   UPLOAD = 0,
-  CATEGORIZE = 1,
-  CONFIRM = 2
+  // Potentially expand on steps once basic import is working well
+  //ACCOUNT = 1,
+  //CONFIRM = 2,
 }
 
-const UploadModal = () => {
+interface UploadModalProps {
+  currentUser?: User | null;
+}
+
+const UploadModal: React.FC<UploadModalProps> = ({
+  currentUser
+}) => {
 
   const uploadModal = useUploadModal();
+
   const acceptedFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+  const fileReader = new FileReader();
 
   const [file, setFile] = useState<File | null>(null);  // file is either typed to null or FileList
+  const [csvData, setCsvData] = useState();
   const [step, setStep] = useState(STEPS.UPLOAD);
 
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: {
+      errors,
+    },
+    reset
+  } = useForm<FieldValues>({
+    defaultValues: {
+      date: '',
+      description: '',
+      amount: '0'
+    }
+  })
+
+  
   // Return to previous step of uploading file
   const onBack = () => {
     setStep((value) => value - 1);
@@ -34,30 +74,59 @@ const UploadModal = () => {
   }
 
   // Handle file submission in dropzone
-  const fileSubmit = (upload : any) => {
+  const handleUpload = (input : any) => {
+    const csv = input.target.files ? input.target.files[0] : null
 
-    // Selected file is either set to the first file in upload or null if none exists
-    const selectedFile = upload.target.files ? upload.target.files[0] : null  
-    console.log(selectedFile)
-
-    if (!selectedFile) {
-      toast.error('No File Found')
-      return null;  // If no file exists exit function
+    if (!csv) {
+      toast.error("Invalid or No File")
+      return null;
     }
 
-    setFile(selectedFile);
-    toast.success('File Submitted')
+    // Parse local CSV file
+    Papa.parse(csv, {
+      complete: async function(results: any) {
+          await setCsvData(results.data);
+          setFile(csv)
+    }});
   }
 
-  const actionLabel = useMemo(() => {
+  const createRecord = async () => {
+    //setIsLoading(true);
 
-    // Check if user is on last step of upload process
-    if (step === STEPS.CONFIRM) { 
+    // If no CSV uploaded prompt user to do so
+    if (!csvData) {
+      toast.error("Upload a file");
+      return;
+    }
+    
+
+    axios.post('api/transaction', csvData[0])
+      .then(() => {
+        uploadModal.onClose();
+      })
+      .catch((error: any) => {
+        toast.error("Something Went Wrong!")
+      })
+      .finally(() => {
+        //setIsLoading(false);
+      })
+
+  }
+
+  // Check for csvData changes
+  useEffect(() => {
+    console.log("CSV", csvData);
+  }, [csvData])
+
+  const actionLabel = useMemo(() => {
+    /* When we wish to display action label based on current step, make sure to add step to dependencies
+    if (step === STEPS.CONFIRM) {
       return 'Upload'
     }
+    */
 
-    return 'Next'
-  }, [step])
+    return 'Submit'
+  }, [])
 
   const secondaryActionLabel = useMemo(() => {
 
@@ -104,21 +173,22 @@ const UploadModal = () => {
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">.CSV (Compatability for other extensions WIP)</p>
           </div>
-          <FileInput accept={acceptedFileTypes} id="dropzone-file" className="hidden" onChange={(file) => {fileSubmit(file)}
+          <FileInput accept={acceptedFileTypes} id="dropzone-file" className="hidden" onChange={(file) => {handleUpload(file)}
           }/>
         </Label>
       </div>
     </div>
   )
 
+
   return ( 
     <Modal 
       isOpen={uploadModal.isOpen}
       onClose={uploadModal.onClose}
-      onSubmit={uploadModal.onClose}
+      onSubmit={createRecord}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
-      secondaryAction={step === STEPS.CATEGORIZE ? undefined : onBack}  // If user is on the first step of upload process prevent onBack action
+      secondaryAction={undefined} // step === STEPS.UPLOAD ? undefined : onBack -> when we wish to display action based on current step
       title="Upload File"
       body={bodyContent}
     />
