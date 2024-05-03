@@ -100,7 +100,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
     }
     
 
-    axios.post('api/transaction', csvData[0])
+    axios.post('api/transaction', csvData)
       .then(() => {
         uploadModal.onClose();
       })

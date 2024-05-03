@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/app/libs/prismadb"
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import test from "node:test";
 
 export async function POST(
   request: Request
@@ -12,24 +13,36 @@ export async function POST(
     return NextResponse.error();
   }
 
-  // Extract body from post request
+  // Extract body content from post request
   const data = await request.json();
 
-  const body = {
-    date: data[0],
-    description: data[1],
-    amount: data[2],
-  }
+  // Iterate over each entry in the CSV File
+  data.forEach( async (item: any) => {
 
-  // Create one transaction record
-  const transaction = await prisma.transaction.create({
-    data: {
-      date: new Date(body.date),
-      description: body.description,
-      amount: parseFloat(body.amount),
-      userId: currentUser.id
+    // Deconstruct each entry in accordance with the database schema
+    const body = {
+      date: item[0],
+      description: item[1],
+      debitAmount: item[2],
+      creditAmount: item[3],
     }
-  });
 
-  return NextResponse.json(transaction)
+    // Use try-catch in to properly vet for any errors in the POST(prisma create) request
+    try {
+      // Create a transaction record using the current entry in the CSV
+      const transaction = await prisma.transaction.create({
+        data: {
+          date: new Date(body.date),
+          description: body.description,
+          debitAmount: parseFloat(body.debitAmount),
+          creditAmount: parseFloat(body.creditAmount),
+          userId: currentUser.id
+        }
+      })
+    } catch (error) {
+      return NextResponse.json({ error: error}, {status: 500})
+    }
+  })
+  // Must return a response at the end of the POST process to communicate sucess with the client-side
+  return NextResponse.json({ data }, {status: 201}) 
 }

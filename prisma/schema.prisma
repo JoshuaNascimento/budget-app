@@ -25,8 +25,8 @@ model User {
   updatedAt DateTime @updatedAt
   //favoriteIds String[] @db.ObjectId Video specific variable
 
-  socialAccounts SocialAccount[]
-  accounts Account[]
+  //socialAccounts SocialAccount[]
+  //accounts Account[]
   transactions Transaction[]
 }
 
@@ -45,7 +45,7 @@ model SocialAccount {
   session_state String?
 
   // Create a relation with the User model using the userId field of Account to reference to the id field of User model
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  //user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
 
   // Using double @@ we specify we require a unique combination of both fields
   @@unique([provider, providerAccountId])
@@ -59,7 +59,7 @@ model Account {
   balance Float
   userId String @db.ObjectId
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  //user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
   //transactions Transaction[]
 }
 
@@ -70,7 +70,8 @@ model Transaction {
   date DateTime @db.Date @default(now())
   //date String // made string for now having issues with DateTime
   description String
-  amount Float
+  debitAmount Float? @default(0)
+  creditAmount Float? @default(0)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   //account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
