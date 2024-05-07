@@ -9,6 +9,7 @@ import RegisterModal from "./components/modals/RegisterModal";
 import LoginModal from "./components/modals/LoginModal";
 import ToasterProvider from "./providers/ToasterProvider";
 import getCurrentUser from "./actions/getCurrentUser";
+import CreateTransactionModal from "./components/modals/CreateTransactionModal";
 
 
 
@@ -30,7 +31,8 @@ export default async function RootLayout({
       <body className={inter.className}>
         <ClientsOnly>
           <ToasterProvider />
-          <UploadModal currentUser={currentUser}/>
+          <UploadModal />
+          <CreateTransactionModal />
           <RegisterModal />
           <LoginModal />
           <Navbar currentUser={currentUser}/>

@@ -3,7 +3,6 @@
 
 import useUploadModal from "@/app/hooks/useUploadModal";
 import Modal from "./Modal";
-import Heading from "../Heading";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -13,11 +12,8 @@ import * as Papa from 'papaparse';
 
 import toast from "react-hot-toast";
 
-import prisma from "@/app/libs/prismadb"
 import { User } from "@prisma/client";
-import credentials from "next-auth/providers/credentials";
 import axios from "axios";
-import { transcode } from "buffer";
 
 
 enum STEPS {
@@ -27,13 +23,9 @@ enum STEPS {
   //CONFIRM = 2,
 }
 
-interface UploadModalProps {
-  currentUser?: User | null;
-}
 
-const UploadModal: React.FC<UploadModalProps> = ({
-  currentUser
-}) => {
+
+const UploadModal = () => {
 
   const uploadModal = useUploadModal();
 
@@ -58,7 +50,8 @@ const UploadModal: React.FC<UploadModalProps> = ({
     defaultValues: {
       date: '',
       description: '',
-      amount: '0'
+      debitAmount: '0',
+      creditAmount: '0',
     }
   })
 
@@ -90,7 +83,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
     }});
   }
 
-  const createRecord = async () => {
+  const uploadCSV = async () => {
     //setIsLoading(true);
 
     // If no CSV uploaded prompt user to do so
@@ -185,7 +178,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
     <Modal 
       isOpen={uploadModal.isOpen}
       onClose={uploadModal.onClose}
-      onSubmit={createRecord}
+      onSubmit={uploadCSV}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={undefined} // step === STEPS.UPLOAD ? undefined : onBack -> when we wish to display action based on current step
