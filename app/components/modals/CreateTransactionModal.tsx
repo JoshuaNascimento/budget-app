@@ -2,11 +2,14 @@
 
 import useCreateTransactionModal from "@/app/hooks/useCreateTransactionModal"
 import Modal from './Modal'
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Datepicker from "tailwind-datepicker-react"
 import Heading from "../Heading";
 import Input from "../inputs/Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
+import Papa from "papaparse";
 
 
 
@@ -16,7 +19,7 @@ const CreateTransactionModal = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false); // Display DatePicker
-  const [selectedDate, setSelectedDate] = useState()
+  const [selectedDate, setSelectedDate] = useState(new Date())
 
 	const dateHandleChange = (selectedDate: any) => { 
 		console.log(selectedDate)
@@ -46,12 +49,26 @@ const CreateTransactionModal = () => {
     }
   })
 
-  const parseTransaction = () => {
-
-  }
-
-  const uploadRecord = async () => {
-
+  const parseTransaction: SubmitHandler<FieldValues> = (data) => {
+    //setIsLoading(true);
+    // id field doesnt seem to work for Datepicker so set date manually using state
+    data.date = selectedDate; 
+    if (data.creditAmount <= 0 && data.debitAmount <= 0) {
+      toast.error("Please enter an amount");
+      return;
+    }
+  
+    console.log("Transaction: ", data);
+    axios.post('api/uploadTransaction', data)
+      .then(() => {
+        createTransactionModal.onClose();
+      })
+      .then((error: any) => {
+        toast.error("Something went wrong!")
+      })
+      .finally(() =>{
+        //setIsLoading(true)
+      })
   }
 
   const actionLabel = "Submit"
@@ -114,7 +131,7 @@ const CreateTransactionModal = () => {
     <Modal
       isOpen={createTransactionModal.isOpen}
       onClose={createTransactionModal.onClose}
-      onSubmit={parseTransaction}
+      onSubmit={handleSubmit(parseTransaction)}
       actionLabel={actionLabel}
       secondaryActionLabel={undefined}
       secondaryAction={undefined}

@@ -93,12 +93,13 @@ const UploadModal = () => {
     }
     
 
-    axios.post('api/transaction', csvData)
+    // Submit csvData to the backend route
+    axios.post('api/uploadCSV', csvData)
       .then(() => {
         uploadModal.onClose();
       })
       .catch((error: any) => {
-        toast.error("Something Went Wrong!")
+        toast.error("Something went wrong!")
       })
       .finally(() => {
         //setIsLoading(false);

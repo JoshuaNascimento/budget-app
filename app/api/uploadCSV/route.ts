@@ -25,7 +25,7 @@ export async function POST(
       debitAmount: item[2],
       creditAmount: item[3],
     }
-
+    
     // Use try-catch in to properly vet for any errors in the POST(prisma create) request
     try {
       // Create a transaction record using the current entry in the CSV
