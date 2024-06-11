@@ -14,11 +14,12 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   
   return ( 
-    <div className=" fixed w-full bg-white z-10 shadow-s, ">
+    <div className="w-full bg-white z-10 shadow-s, ">
       <div 
         className="
         py-4
         border-b-[1px]
+        
         "
       >
         <Container>
@@ -33,10 +34,11 @@ const Navbar: React.FC<NavbarProps> = ({
               "
             >
               <Logo/>
+              <Categories/>
               <UserMenu currentUser={currentUser}/>
             </div>
         </Container>
-        <Categories/>
+        
       </div>
     </div> 
   );

@@ -4,9 +4,11 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback } from "react"
 import { IconType } from "react-icons"
 import queryString from 'query-string'
+import { stringify } from "querystring"
 
 interface CategoryBoxProps {
   icon: IconType
+  route: string
   label: string
   selected?: boolean,
 }
@@ -14,22 +16,29 @@ interface CategoryBoxProps {
 const CategoryBox: React.FC<CategoryBoxProps> = ({
   icon: Icon,
   label,
+  route,
   selected
 }) => {
   const router = useRouter();
   const params = useSearchParams();
 
   const handleClick = useCallback(() => {
+    
+    router.push(route);
+    
+    /*
     let curerntQuery = {};  // Define empty query
 
     if (params) { // Check if params exists
       curerntQuery = queryString.parse(params.toString());  // Parse params into object
     }
 
+    
     const updatedQuery: any = {
       ...curerntQuery,  // Spread current queries
       category: label // Update category param to label of category clicked
     }
+      
 
     if (params?.get('category') === label) {  // Check if category clicked is already selected
       delete updatedQuery.category; // remove category param from query
@@ -39,10 +48,12 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
       url: '/', // Pathname
       query: updatedQuery // Newest query
     }, { skipNull: true }); // Skip all of the empty options
-
+    
+  
     router.push(url)  // Update url
+    */
 
-  }, [label, params, router]);
+  }, [label, route, params, router]);
 
   return ( 
     <div

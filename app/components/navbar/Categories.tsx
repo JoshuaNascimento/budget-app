@@ -2,8 +2,7 @@
 
 import Container from "../Container"
 import { FaChartPie } from "react-icons/fa";
-import { GiReceiveMoney } from "react-icons/gi";
-import { GiPayMoney } from "react-icons/gi";
+import { TbFileDollar } from "react-icons/tb";
 import CategoryBox from "../CategoryBox";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -11,18 +10,15 @@ import { usePathname, useSearchParams } from "next/navigation";
 export const categories = [ // Collection of categories to display
   {
     label: 'Dashboard',
+    route: '/',
     icon: FaChartPie,
     desciprtion: "View overall financial status"
   },
   {
-    label: 'Income',
-    icon: GiReceiveMoney,
-    desciprtion: "View income"
-  },
-  {
-    label: 'Expenses',
-    icon: GiPayMoney,
-    desciprtion: "View expenses"
+    label: 'Transactions',
+    route: '/transactions',
+    icon: TbFileDollar,
+    desciprtion: "View and edit transactions"
   },
 ]
 
@@ -30,6 +26,7 @@ const Categories = () => {
   const params = useSearchParams(); // Pull parameters from url
   const category = params?.get('category'); // Set category param to variable
   const pathname = usePathname();
+  console.log("PATHNAME: ", pathname);
 
   const isMainPage = pathname === '/';  // Boolean for if we are on the main page
 
@@ -45,15 +42,16 @@ const Categories = () => {
         flex
         flex-row
         items-center
-        justify-between
+        justify-center
+        gap-40
         overflow-x-auto
-        border-t-2
         "
       >
         {categories.map((item) => (
           <CategoryBox
             key={item.label}
             label={item.label}
+            route={item.route}
             selected={category === item.label}
             icon={item.icon}
           />
