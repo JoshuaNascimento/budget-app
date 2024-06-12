@@ -25,35 +25,8 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
   const handleClick = useCallback(() => {
     
     router.push(route);
-    
-    /*
-    let curerntQuery = {};  // Define empty query
 
-    if (params) { // Check if params exists
-      curerntQuery = queryString.parse(params.toString());  // Parse params into object
-    }
-
-    
-    const updatedQuery: any = {
-      ...curerntQuery,  // Spread current queries
-      category: label // Update category param to label of category clicked
-    }
-      
-
-    if (params?.get('category') === label) {  // Check if category clicked is already selected
-      delete updatedQuery.category; // remove category param from query
-    }
-
-    const url = queryString.stringifyUrl({  // Generate url string
-      url: '/', // Pathname
-      query: updatedQuery // Newest query
-    }, { skipNull: true }); // Skip all of the empty options
-    
-  
-    router.push(url)  // Update url
-    */
-
-  }, [label, route, params, router]);
+  }, [route, router]);
 
   return ( 
     <div

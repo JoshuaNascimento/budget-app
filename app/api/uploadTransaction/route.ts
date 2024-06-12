@@ -13,7 +13,6 @@ export async function POST(
   }
 
   const data = await request.json();
-  console.log(data);
 
   
   try {

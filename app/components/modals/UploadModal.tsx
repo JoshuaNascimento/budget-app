@@ -108,9 +108,10 @@ const UploadModal = () => {
   }
 
   // Check for csvData changes
+  /*
   useEffect(() => {
     console.log("CSV", csvData);
-  }, [csvData])
+  }, [csvData]) */
 
   const actionLabel = useMemo(() => {
     /* When we wish to display action label based on current step, make sure to add step to dependencies

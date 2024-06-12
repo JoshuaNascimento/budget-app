@@ -26,7 +26,6 @@ const Categories = () => {
   const params = useSearchParams(); // Pull parameters from url
   const category = params?.get('category'); // Set category param to variable
   const pathname = usePathname();
-  console.log("PATHNAME: ", pathname);
 
   const isMainPage = pathname === '/';  // Boolean for if we are on the main page
 

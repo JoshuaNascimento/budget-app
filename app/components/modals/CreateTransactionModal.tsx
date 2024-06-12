@@ -22,7 +22,6 @@ const CreateTransactionModal = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
 
 	const dateHandleChange = (selectedDate: any) => { 
-		console.log(selectedDate)
     setSelectedDate(selectedDate)
 	}
 
