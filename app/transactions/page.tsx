@@ -16,8 +16,9 @@ export default async function TransactionsPage({
       {transData?.map((item) => (
         <TransactionItem
           key={item.id}
-          date={item.date}
           description={item.description}
+          category={item.category}
+          date={item.date}
           debitAmount={item.debitAmount || 0}
           creditAmount={item.creditAmount || 0}
         />

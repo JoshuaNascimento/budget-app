@@ -1,26 +1,31 @@
 'use client'
 
-import useCreateTransactionModal from "@/app/hooks/useCreateTransactionModal"
-import Modal from './Modal'
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Datepicker from "tailwind-datepicker-react"
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import axios from "axios";
-import Papa from "papaparse";
+import useUpdateTransactionModal from "@/app/hooks/useUpdateTransactionModal";
+import Modal from "./Modal";
+
+const UpdateTransactionModal = () => {
+
+  // TODO: to have forms update in realtime need to pass values in <Input/> Label field
+  // Changing default values to non-empty strings prevents re-renders for some reason
+    
+  const updateTransactionModal = useUpdateTransactionModal();
+  console.log("Modal: ", updateTransactionModal.getTransaction().description);
 
 
-
-const CreateTransactionModal = () => {
-
-  const createTransactionModal = useCreateTransactionModal();
+  const data = updateTransactionModal.getTransaction()
+  
 
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false); // Display DatePicker
   const [selectedDate, setSelectedDate] = useState(new Date())
-
+  
+  
 	const dateHandleChange = (selectedDate: any) => { 
     setSelectedDate(selectedDate)
 	}
@@ -41,36 +46,17 @@ const CreateTransactionModal = () => {
     reset
   } = useForm<FieldValues>({
     defaultValues: {
-      date: '',
+      date: selectedDate,
+      category: '',
       description: '',
-      debitAmount: '0',
-      creditAmount: '0',
+      debitAmount: '',
+      creditAmount: '',
     }
   })
 
-  const parseTransaction: SubmitHandler<FieldValues> = (data) => {
-    //setIsLoading(true);
-    // id field doesnt seem to work for Datepicker so set date manually using state
-    data.date = selectedDate; 
-    if (data.creditAmount <= 0 && data.debitAmount <= 0) {
-      toast.error("Please enter an amount");
-      return;
-    }
-  
-    console.log("Transaction: ", data);
-    axios.post('api/uploadTransaction', data)
-      .then(() => {
-        createTransactionModal.onClose();
-      })
-      .then((error: any) => {
-        toast.error("Something went wrong!")
-      })
-      .finally(() =>{
-        //setIsLoading(true)
-      })
-  }
 
-  const actionLabel = "Submit"
+
+  const actionLabel = "Update"
 
   const options = {
     title: "Date of Transaction",
@@ -92,31 +78,38 @@ const CreateTransactionModal = () => {
     <div className="flex flex-col gap-4">
       
       <Heading 
-        title ="Record a Transaction"
+        title ="Update a Transaction"
       />
 
       <Datepicker options={options} onChange={dateHandleChange} show={show} setShow={dateHandleClose} />
         
       <Input 
         id="description"
-        label="Description"
+        label={data.description}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
 
+      {/* TODO: IDEA 1 
+        Maybe some sort of tertiary operator to display the default label AND previous input
+      */}
       <Input 
         id="category"
-        label="Category"
+        label={`Category: ${data.category}`}
         disabled={isLoading}
         register={register}
         errors={errors}
       />
       
+
+      {/* TODO: IDEA 2 
+        An or operator to display either the amount previously inputted OR default value
+      */}
       <Input 
         id="debitAmount"
-        label="Amount Gained"
+        label={data.debitAmount || "Amount Gained"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -136,16 +129,16 @@ const CreateTransactionModal = () => {
 
   return (
     <Modal
-      isOpen={createTransactionModal.isOpen}
-      onClose={createTransactionModal.onClose}
-      onSubmit={handleSubmit(parseTransaction)}
+      isOpen={updateTransactionModal.isOpen}
+      onClose={updateTransactionModal.onClose}
+      onSubmit={() => {console.log("update modal!")}}
       actionLabel={actionLabel}
       secondaryActionLabel={undefined}
       secondaryAction={undefined}
-      title="Record A Transaction"
+      title="Update A Transaction"
       body={bodyContent}
     />
   )
 }
 
-export default CreateTransactionModal;
+export default UpdateTransactionModal;

@@ -5,6 +5,7 @@ interface TransactionTableProps {
 }
 
 const TransactionTable: React.FC<TransactionTableProps> = ({children}) => {
+  
   return (  
     <table className="
       w-full
@@ -13,10 +14,13 @@ const TransactionTable: React.FC<TransactionTableProps> = ({children}) => {
     ">
       {/* Table Headers */} 
       <thead>
-        <th>Description</th>
-        <th>Date</th>
-        <th>Debited</th>
-        <th>Credited</th>
+        <tr>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Date</th>
+          <th>Debited</th>
+          <th>Credited</th>
+        </tr>
       </thead>
       {children}
     </table>

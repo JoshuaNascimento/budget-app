@@ -22,6 +22,7 @@ export async function POST(
     const body = {
       date: item[0],
       description: item[1],
+      category: "",
       debitAmount: item[2],
       creditAmount: item[3],
     }
@@ -33,6 +34,7 @@ export async function POST(
         data: {
           date: new Date(body.date),
           description: body.description,
+          category: body.category,
           debitAmount: parseFloat(body.debitAmount),
           creditAmount: parseFloat(body.creditAmount),
           userId: currentUser.id

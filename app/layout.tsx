@@ -10,8 +10,7 @@ import LoginModal from "./components/modals/LoginModal";
 import ToasterProvider from "./providers/ToasterProvider";
 import getCurrentUser from "./actions/getCurrentUser";
 import CreateTransactionModal from "./components/modals/CreateTransactionModal";
-
-
+import UpdateTransactionModal from "./components/modals/UpdateTransactionModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +32,7 @@ export default async function RootLayout({
           <ToasterProvider />
           <UploadModal />
           <CreateTransactionModal />
+          <UpdateTransactionModal />
           <RegisterModal />
           <LoginModal />
           <Navbar currentUser={currentUser}/>

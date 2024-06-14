@@ -66,10 +66,9 @@ model Account {
 model Transaction {
   id String @id @default(auto()) @map("_id")  @db.ObjectId
   userId String @db.ObjectId
-  //accountId String @db.ObjectId
-  date DateTime @db.Date @default(now())
-  //date String // made string for now having issues with DateTime
   description String
+  category String
+  date DateTime @db.Date @default(now())
   debitAmount Float? @default(0)
   creditAmount Float? @default(0)
 

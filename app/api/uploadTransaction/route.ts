@@ -20,6 +20,7 @@ export async function POST(
       data: {
         date: data.date,
         description: data.description,
+        category: data.category,
         debitAmount: parseFloat(data.debitAmount),
         creditAmount: parseFloat(data.creditAmount),
         userId: currentUser.id
