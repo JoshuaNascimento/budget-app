@@ -1,6 +1,6 @@
 'use client'
 
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { Field, FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Datepicker from "tailwind-datepicker-react"
 import Heading from "../Heading";
 import Input from "../inputs/Input";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useUpdateTransactionModal from "@/app/hooks/useUpdateTransactionModal";
 import Modal from "./Modal";
+import axios from "axios";
 
 const UpdateTransactionModal = () => {
 
@@ -15,16 +16,13 @@ const UpdateTransactionModal = () => {
   // Changing default values to non-empty strings prevents re-renders for some reason
     
   const updateTransactionModal = useUpdateTransactionModal();
-  console.log("Modal: ", updateTransactionModal.getTransaction().description);
-
 
   const data = updateTransactionModal.getTransaction()
-  
+  console.log("Incoming Data: ", data)
 
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false); // Display DatePicker
-  const [selectedDate, setSelectedDate] = useState(new Date())
-  
+  const [selectedDate, setSelectedDate] = useState(data.date)
   
 	const dateHandleChange = (selectedDate: any) => { 
     setSelectedDate(selectedDate)
@@ -46,18 +44,18 @@ const UpdateTransactionModal = () => {
     reset
   } = useForm<FieldValues>({
     defaultValues: {
-      date: selectedDate,
+      id: data.id,
+      date: data.date,
       category: '',
       description: '',
-      debitAmount: '',
-      creditAmount: '',
+      debitAmount: 0,
+      creditAmount: 0,
     }
   })
 
-
-
   const actionLabel = "Update"
 
+  // Options for Datepicker component
   const options = {
     title: "Date of Transaction",
     theme: {
@@ -71,8 +69,40 @@ const UpdateTransactionModal = () => {
       inputIcon: "",
       selected: "bg-lime-600",
     },
+    defaultDate: new Date(data.date)
   }
 
+  // Change the default values of our form each time the modal is rendered
+  useEffect(() => { 
+    setValue('description', data.description)
+    setValue('category', data.category)
+    setValue('date', data.date)
+    setValue('debitAmount', data.debitAmount)
+    setValue('creditAmount', data.creditAmount)
+  }, [setValue, data])
+
+  const updateTransaction: SubmitHandler<FieldValues> = (updateData) => {
+    //setIsLoading(true)
+    updateData.id = data.id
+    if (updateData.creditAmount <= 0 && updateData.debitAmount <= 0) {
+      toast.error("Please enter an amount");
+      return;
+    }
+
+    console.log("Updating: ", updateData)
+    axios.put('api/updateTransaction', updateData)
+      .then(() => {
+        updateTransactionModal.onClose();
+      })
+      .then((error: any) => {
+        toast.error("Something went wrong!")
+        console.log("\n\n\nERROR\n\n\n")
+      })
+      .finally(() => {
+        //setIsLoading(true)
+      })
+  }
+  
   const bodyContent = (
     
     <div className="flex flex-col gap-4">
@@ -85,44 +115,40 @@ const UpdateTransactionModal = () => {
         
       <Input 
         id="description"
-        label={data.description}
+        label={"Description"}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
 
-      {/* TODO: IDEA 1 
-        Maybe some sort of tertiary operator to display the default label AND previous input
-      */}
       <Input 
         id="category"
-        label={`Category: ${data.category}`}
+        label={'Category'}
         disabled={isLoading}
         register={register}
         errors={errors}
       />
       
-
-      {/* TODO: IDEA 2 
-        An or operator to display either the amount previously inputted OR default value
-      */}
+      {data.debitAmount > 0 ? 
       <Input 
         id="debitAmount"
-        label={data.debitAmount || "Amount Gained"}
+        label={'Debited Amount'}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
+      :
       <Input 
         id="creditAmount"
-        label="Amount Lost"
+        label={'Credited Amount'}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
+      }
 
     </div>
   )
@@ -131,7 +157,7 @@ const UpdateTransactionModal = () => {
     <Modal
       isOpen={updateTransactionModal.isOpen}
       onClose={updateTransactionModal.onClose}
-      onSubmit={() => {console.log("update modal!")}}
+      onSubmit={handleSubmit(updateTransaction)}
       actionLabel={actionLabel}
       secondaryActionLabel={undefined}
       secondaryAction={undefined}

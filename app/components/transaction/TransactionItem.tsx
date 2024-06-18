@@ -1,10 +1,9 @@
 'use client'
 
 import useUpdateTransactionModal from "@/app/hooks/useUpdateTransactionModal"
-import UpdateTransactionModal from "../modals/UpdateTransactionModal"
-
 
 interface TransactionItemProps {
+  id: string
   description: string
   category: string
   date: Date
@@ -13,6 +12,7 @@ interface TransactionItemProps {
 }
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
+  id,
   description,
   category,
   date,
@@ -23,7 +23,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
 
   return (
     <tbody className="bg-slate-100 hover:cursor-pointer hover:bg-slate-200">
-      <tr onClick={() => updateTransactionModal.onOpen({description, category,
+      <tr onClick={() => updateTransactionModal.onOpen({id, description, category, date,
         debitAmount, creditAmount
       })}>
         <td className="pl-10">{description}</td>
