@@ -9,16 +9,17 @@ import toast from "react-hot-toast";
 import useUpdateTransactionModal from "@/app/hooks/useUpdateTransactionModal";
 import Modal from "./Modal";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const UpdateTransactionModal = () => {
 
-  // TODO: to have forms update in realtime need to pass values in <Input/> Label field
-  // Changing default values to non-empty strings prevents re-renders for some reason
+  // TODO: Date changing doesnt work
+
+  const router = useRouter()
     
   const updateTransactionModal = useUpdateTransactionModal();
 
   const data = updateTransactionModal.getTransaction()
-  console.log("Incoming Data: ", data)
 
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false); // Display DatePicker
@@ -54,6 +55,7 @@ const UpdateTransactionModal = () => {
   })
 
   const actionLabel = "Update"
+  const secondaryActionLabel ="Delete"
 
   // Options for Datepicker component
   const options = {
@@ -81,7 +83,7 @@ const UpdateTransactionModal = () => {
     setValue('creditAmount', data.creditAmount)
   }, [setValue, data])
 
-  const updateTransaction: SubmitHandler<FieldValues> = (updateData) => {
+  const updateTransaction: SubmitHandler<FieldValues> = async (updateData) => {
     //setIsLoading(true)
     updateData.id = data.id
     if (updateData.creditAmount <= 0 && updateData.debitAmount <= 0) {
@@ -89,18 +91,30 @@ const UpdateTransactionModal = () => {
       return;
     }
 
-    console.log("Updating: ", updateData)
-    axios.put('api/updateTransaction', updateData)
-      .then(() => {
-        updateTransactionModal.onClose();
-      })
-      .then((error: any) => {
-        toast.error("Something went wrong!")
-        console.log("\n\n\nERROR\n\n\n")
-      })
-      .finally(() => {
-        //setIsLoading(true)
-      })
+    try {
+      await axios.put('api/updateTransaction', updateData)
+      toast.success("Transaction updated successfully")
+      router.refresh()
+    } catch (error: any) {
+      console.log(error)
+      toast.error("Somethign went wrong")
+    }
+    updateTransactionModal.onClose()
+  }
+
+  const deleteTransaction: SubmitHandler<FieldValues> = async () => {
+    try {
+      await axios.delete('/api/deleteTransaction', {
+        data: {id: data.id},
+      });
+      toast.success("Transaction deleted successfully")
+      router.refresh();
+    } catch (error: any) {
+      console.log(error)
+      toast.error("Something went wrong")
+    }
+
+    updateTransactionModal.onClose()
   }
   
   const bodyContent = (
@@ -159,8 +173,8 @@ const UpdateTransactionModal = () => {
       onClose={updateTransactionModal.onClose}
       onSubmit={handleSubmit(updateTransaction)}
       actionLabel={actionLabel}
-      secondaryActionLabel={undefined}
-      secondaryAction={undefined}
+      secondaryActionLabel={secondaryActionLabel}
+      secondaryAction={handleSubmit(deleteTransaction)}
       title="Update A Transaction"
       body={bodyContent}
     />

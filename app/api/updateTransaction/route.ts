@@ -2,21 +2,37 @@ import { NextResponse } from 'next/server';
 
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import { NextApiResponse } from 'next';
 
 export async function PUT(
-  request: Request
+  request: Request,
 ) {
-  const currentUser = await getCurrentUser();
-
-  if (!currentUser) {
-    return NextResponse.error();
-  }
-
-  const data = await request.json();
-  console.log("Server: ", data)
 
   try {
-    const transaction = await prisma.transaction.update({
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return new Response("Unauthorized", {status: 401})
+    }
+
+    const data = await request.json();
+
+  
+    const updateTransaction = await prisma.transaction.findFirst({
+      where: {
+        id: data.id
+      }
+    })
+
+    if (!updateTransaction) {
+      throw new Response("Transaction not found", {status: 400})
+    }
+
+    if (updateTransaction.userId !== currentUser.id) {
+      throw new Response("You do not have permission for this update", {status: 403})
+    }
+
+    await prisma.transaction.update({
       where: {
         id: data.id
       },
@@ -29,9 +45,9 @@ export async function PUT(
         userId: currentUser.id
       }
     })
-  } catch (error) { // Also returning an error for some reason
-    return NextResponse.json({ error: error}, {status: 500})
+    
+    return new Response("Transaction Updated")
+  } catch (error: any) {
+    return new Response(error.message, {status: 400})
   }
-  // 204: server sucessfully processed request but not returning content
-  return NextResponse.json({ data }, { status: 200 }) 
 }

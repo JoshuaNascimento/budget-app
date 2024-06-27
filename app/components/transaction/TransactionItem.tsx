@@ -1,6 +1,7 @@
 'use client'
 
 import useUpdateTransactionModal from "@/app/hooks/useUpdateTransactionModal"
+import { useEffect } from "react"
 
 interface TransactionItemProps {
   id: string
@@ -20,6 +21,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   creditAmount
 }) => {
   const updateTransactionModal = useUpdateTransactionModal();
+
+  useEffect(() => {
+  }, [id])
 
   return (
     <tbody className="bg-slate-100 hover:cursor-pointer hover:bg-slate-200">
