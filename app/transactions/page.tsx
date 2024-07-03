@@ -10,21 +10,10 @@ export default async function TransactionsPage({
   children: React.ReactNode;
 }) {
   const transData = await getUserTransaction();
+  console.log("First: ", transData[0])
   return (
     <ClientsOnly>
-      <TransactionTable>
-      {transData?.map((item) => (
-        <TransactionItem
-          key={item.id}
-          id={item.id}
-          description={item.description}
-          category={item.category}
-          date={item.date}
-          debitAmount={item.debitAmount || 0}
-          creditAmount={item.creditAmount || 0}
-        />
-      ))}
-      </TransactionTable>
+      <TransactionTable transactions={transData}/>
     </ClientsOnly>
   )
 }
