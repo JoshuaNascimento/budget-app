@@ -7,3 +7,15 @@ body,
 :root{
   height: 100%;
 }
+
+@layer base {
+  /* Specifically for Pagination component to display correctly */
+  ul {
+    display: flex;
+    justify-content: center;
+    width: 100%
+  }
+  button {
+    width: 4.5rem;
+  }
+}

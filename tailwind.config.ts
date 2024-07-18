@@ -12,7 +12,9 @@ const config: Config = {
     extend: {},
   },
   plugins: [
-    require("flowbite/plugin")
+    require("flowbite/plugin")({
+      charts: true,
+    })
   ],
 };
 export default config;

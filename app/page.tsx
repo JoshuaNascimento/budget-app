@@ -2,6 +2,7 @@ import ClientsOnly from "./components/ClientsOnly";
 import Container from "./components/Container";
 
 export default function Home() {
+
   return (
     <ClientsOnly>
       <Container>
