@@ -9,8 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.1.2",
+    "@headlessui/tailwindcss": "^0.2.1",
     "@next-auth/prisma-adapter": "^0.4.4-canary.81",
     "@prisma/client": "^5.10.2",
+    "@remixicon/react": "^4.2.0",
+    "@tremor/react": "^3.17.4",
     "axios": "^1.6.7",
     "axois": "^0.0.1-security",
     "flowbite": "^2.3.0",
@@ -28,6 +32,7 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
