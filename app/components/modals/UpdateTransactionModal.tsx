@@ -29,7 +29,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false); // Display DatePicker
   const [selectedDate, setSelectedDate] = useState(data.date)
-  const [selectedCategory, setSelectedCategory] = useState(data ? data.category : "")
+  const [selectedCategory, setSelectedCategory] = useState(data.category)
   
 	const dateHandleChange = (selectedDate: any) => { 
     setSelectedDate(selectedDate)
@@ -42,6 +42,11 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
   const handleSelect = async (e: any) => {
     console.log(e.target.value)
     setSelectedCategory(e.target.value)
+  }
+
+  const resetFields = () => {
+    setSelectedCategory('');
+    setSelectedDate('');
   }
   
   const {
@@ -88,8 +93,6 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
   // Change the default values of our form each time the modal is rendered
   useEffect(() => { 
     setValue('description', data.description)
-    setValue('category', data.category)
-    setValue('date', data.date)
     setValue('debitAmount', data.debitAmount)
     setValue('creditAmount', data.creditAmount)
   }, [setValue, data])
@@ -97,8 +100,12 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
   const updateTransaction: SubmitHandler<FieldValues> = async (updateData) => {
     //setIsLoading(true)
     updateData.id = data.id
-    updateData.category = selectedCategory
-    console.log("UPDATE: ", updateData)
+    if (data.debitAmount > 0) {
+      updateData.category = "Other"
+    } else {
+      updateData.category = "Job"
+    }
+    updateData.date = selectedDate
     
     if (updateData.creditAmount <= 0 && updateData.debitAmount <= 0) {
       toast.error("Please enter an amount");
@@ -113,6 +120,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
       console.log(error)
       toast.error("Something went wrong")
     }
+    resetFields() 
     updateTransactionModal.onClose()
   }
 
@@ -153,6 +161,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
       <Select value={selectedCategory} id="category" onChange={(e) => handleSelect(e)}>
         <option>Select a category</option>
         {categories.map( (item: any) => (
+          // TODO: if check item to see if it equals the category already assigned to the transaction, make it selected if true
           <option key={item.id} value={item.id}>{item}</option>
         ))}
       </Select>

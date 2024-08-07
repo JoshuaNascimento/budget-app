@@ -21,7 +21,13 @@ export async function POST(
         name,
         hashedPassword
       }
-    });
-
+    })
+    
+    // Generate budget schema on user creation
+    const budget = await prisma.budget.create({
+      data : {
+        userId: user.id
+      }
+    })
     return NextResponse.json(user); // Return response
   }

@@ -16,12 +16,13 @@ export default async function getUserCategories() {
       return null;
     }
 
-    const userCategories = await prisma.user.findFirst({
-      select: {
-        categories: true
-      }
+    const userCategories = await prisma.budget.findFirst({
+      where: {
+        user: session.user
+      },
+      select: { category: true }
     });
-    return userCategories?.categories;
+    return userCategories?.category;
   } catch (error: any) {
     return null;
   }

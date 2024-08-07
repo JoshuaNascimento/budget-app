@@ -63,7 +63,7 @@ const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({categori
     //setIsLoading(true);
     // id field doesnt seem to work for Datepicker so set date manually using state
     data.date = selectedDate; 
-    data.category = selectedCategory;
+    data.category = selectedCategory ? selectedCategory : "Other";
     if (data.creditAmount <= 0 && data.debitAmount <= 0) {
       toast.error("Please enter an amount");
       return;

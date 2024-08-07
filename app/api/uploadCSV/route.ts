@@ -34,7 +34,7 @@ export async function POST(
         data: {
           date: new Date(body.date),
           description: body.description,
-          category: body.category,
+          category: body.debitAmount ? "Other" : "Job", // Set default value to "Other" on expenses and Job on income
           debitAmount: parseFloat(body.debitAmount),
           creditAmount: parseFloat(body.creditAmount),
           userId: currentUser.id

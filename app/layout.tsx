@@ -27,6 +27,7 @@ export default async function RootLayout({
 }) {
   const currentUser = await getCurrentUser(); // Pull User if logged in
   const userCategories = await getUserCategories();
+  
   return (
     <html lang="en">
       <body className={inter.className}>
