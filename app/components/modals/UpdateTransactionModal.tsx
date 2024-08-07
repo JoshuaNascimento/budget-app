@@ -4,14 +4,19 @@ import { Field, FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Datepicker from "tailwind-datepicker-react"
 import Heading from "../Heading";
 import Input from "../inputs/Input";
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useUpdateTransactionModal from "@/app/hooks/useUpdateTransactionModal";
 import Modal from "./Modal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Select } from "flowbite-react";
 
-const UpdateTransactionModal = () => {
+interface UpdateTransactionModalProps {
+  categories: any
+}
+
+const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categories}) => {
 
   // TODO: Date changing doesnt work
 
@@ -24,6 +29,7 @@ const UpdateTransactionModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false); // Display DatePicker
   const [selectedDate, setSelectedDate] = useState(data.date)
+  const [selectedCategory, setSelectedCategory] = useState(data ? data.category : "")
   
 	const dateHandleChange = (selectedDate: any) => { 
     setSelectedDate(selectedDate)
@@ -32,6 +38,11 @@ const UpdateTransactionModal = () => {
 	const dateHandleClose = (state: boolean) => {
 		setShow(state)
 	}
+
+  const handleSelect = async (e: any) => {
+    console.log(e.target.value)
+    setSelectedCategory(e.target.value)
+  }
   
   const {
     register,
@@ -86,6 +97,9 @@ const UpdateTransactionModal = () => {
   const updateTransaction: SubmitHandler<FieldValues> = async (updateData) => {
     //setIsLoading(true)
     updateData.id = data.id
+    updateData.category = selectedCategory
+    console.log("UPDATE: ", updateData)
+    
     if (updateData.creditAmount <= 0 && updateData.debitAmount <= 0) {
       toast.error("Please enter an amount");
       return;
@@ -136,13 +150,12 @@ const UpdateTransactionModal = () => {
         required
       />
 
-      <Input 
-        id="category"
-        label={'Category'}
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-      />
+      <Select value={selectedCategory} id="category" onChange={(e) => handleSelect(e)}>
+        <option>Select a category</option>
+        {categories.map( (item: any) => (
+          <option key={item.id} value={item.id}>{item}</option>
+        ))}
+      </Select>
       
       {data.debitAmount > 0 ? 
       <Input 

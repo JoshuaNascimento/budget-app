@@ -11,6 +11,7 @@ import ToasterProvider from "./providers/ToasterProvider";
 import getCurrentUser from "./actions/getCurrentUser";
 import CreateTransactionModal from "./components/modals/CreateTransactionModal";
 import UpdateTransactionModal from "./components/modals/UpdateTransactionModal";
+import getUserCategories from "./actions/getUserCategories";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const currentUser = await getCurrentUser(); // Pull User if logged in
+  const userCategories = await getUserCategories();
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -32,7 +34,7 @@ export default async function RootLayout({
           <ToasterProvider />
           <UploadModal />
           <CreateTransactionModal />
-          <UpdateTransactionModal />
+          <UpdateTransactionModal categories={userCategories}/>
           <RegisterModal />
           <LoginModal />
           <Navbar currentUser={currentUser}/>

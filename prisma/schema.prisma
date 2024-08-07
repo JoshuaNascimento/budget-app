@@ -28,6 +28,7 @@ model User {
   //socialAccounts SocialAccount[]
   //accounts Account[]
   transactions Transaction[]
+  categories String[] @default(["Housing", "Transportation", "Grocery", "Eating Out", "Utilities", "Insurance", "Healthcare", "Saving", "Investment", "Debt", "Recreation & Entertainment", "Personal Spending", "Subscriptions"])
 }
 
 model SocialAccount {
