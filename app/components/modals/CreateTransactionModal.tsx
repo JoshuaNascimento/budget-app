@@ -10,16 +10,22 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Papa from "papaparse";
+import { Select } from "flowbite-react";
+import { useRouter } from "next/navigation";
 
+interface CreateTransactionModalProps {
+  categories: any
+}
 
-
-const CreateTransactionModal = () => {
+const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({categories}) => {
 
   const createTransactionModal = useCreateTransactionModal();
 
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false); // Display DatePicker
   const [selectedDate, setSelectedDate] = useState(new Date())
+  const [selectedCategory, setSelectedCategory] = useState("")
 
 	const dateHandleChange = (selectedDate: any) => { 
     setSelectedDate(selectedDate)
@@ -28,6 +34,11 @@ const CreateTransactionModal = () => {
 	const dateHandleClose = (state: boolean) => {
 		setShow(state)
 	}
+
+  const handleSelect = async (e: any) => {
+    console.log(e.target.value)
+    setSelectedCategory(e.target.value)
+  }
   
   const {
     register,
@@ -52,22 +63,22 @@ const CreateTransactionModal = () => {
     //setIsLoading(true);
     // id field doesnt seem to work for Datepicker so set date manually using state
     data.date = selectedDate; 
+    data.category = selectedCategory;
     if (data.creditAmount <= 0 && data.debitAmount <= 0) {
       toast.error("Please enter an amount");
       return;
     }
   
-    console.log("Transaction: ", data);
-    axios.post('api/uploadTransaction', data)
-      .then(() => {
-        createTransactionModal.onClose();
-      })
-      .then((error: any) => {
-        toast.error("Something went wrong!")
-      })
-      .finally(() =>{
-        //setIsLoading(true)
-      })
+    try {
+      console.log("Transaction: ", data);
+      axios.post('api/uploadTransaction', data)
+      toast.success("Transaction created successfully")
+      router.refresh();
+    } catch (error: any) {
+      console.log(error)
+      toast.error("Something went wrong")
+    }
+    createTransactionModal.onClose()
   }
 
   const actionLabel = "Submit"
@@ -106,13 +117,12 @@ const CreateTransactionModal = () => {
         required
       />
 
-      <Input 
-        id="category"
-        label="Category"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-      />
+      <Select required value={selectedCategory} id="category" onChange={(e) => handleSelect(e)}>
+        <option>Select a category</option>
+        {categories.map( (item: any) => (
+          <option key={item.id} value={item.id}>{item}</option>
+        ))}
+      </Select>
       
       <Input 
         id="debitAmount"

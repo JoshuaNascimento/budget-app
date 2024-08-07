@@ -33,7 +33,7 @@ export default async function RootLayout({
         <ClientsOnly>
           <ToasterProvider />
           <UploadModal />
-          <CreateTransactionModal />
+          <CreateTransactionModal categories={userCategories}/>
           <UpdateTransactionModal categories={userCategories}/>
           <RegisterModal />
           <LoginModal />

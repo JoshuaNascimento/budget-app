@@ -111,7 +111,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
       router.refresh()
     } catch (error: any) {
       console.log(error)
-      toast.error("Somethign went wrong")
+      toast.error("Something went wrong")
     }
     updateTransactionModal.onClose()
   }
