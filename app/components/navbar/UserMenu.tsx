@@ -6,11 +6,9 @@ import MenuItem from "./MenuItem";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useUploadModal from "@/app/hooks/useUploadModal";
-import useCreateTransactionModal from "@/app/hooks/useCreateTransactionModal";
+import useRecordTransactionModal from "@/app/hooks/useRecordTransactionModal";
 import { User } from "@prisma/client";
 import { signOut } from "next-auth/react";
-
-
 
 
 interface UserMenuProps {
@@ -23,7 +21,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const uploadModal = useUploadModal();
-  const createTransactionModal = useCreateTransactionModal();
+  const recordTransactionModal = useRecordTransactionModal();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = useCallback(() => {
@@ -103,15 +101,11 @@ const UserMenu: React.FC<UserMenuProps> = ({
             {currentUser? (
             <>
               <MenuItem
-                onClick={() => {}}
-                label='Dashboard'
-              />
-              <MenuItem
                 onClick={uploadModal.onOpen}
                 label='Upload File'
               />
               <MenuItem
-                onClick={createTransactionModal.onOpen}
+                onClick={recordTransactionModal.onOpen}
                 label='Record Transaction'
               />
               <MenuItem

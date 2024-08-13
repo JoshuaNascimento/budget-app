@@ -9,7 +9,7 @@ import RegisterModal from "./components/modals/RegisterModal";
 import LoginModal from "./components/modals/LoginModal";
 import ToasterProvider from "./providers/ToasterProvider";
 import getCurrentUser from "./actions/getCurrentUser";
-import CreateTransactionModal from "./components/modals/CreateTransactionModal";
+import RecordTransactionModal from "./components/modals/RecordTransactionModal";
 import UpdateTransactionModal from "./components/modals/UpdateTransactionModal";
 import getUserCategories from "./actions/getUserCategories";
 
@@ -34,7 +34,7 @@ export default async function RootLayout({
         <ClientsOnly>
           <ToasterProvider />
           <UploadModal />
-          <CreateTransactionModal categories={userCategories}/>
+          <RecordTransactionModal categories={userCategories}/>
           <UpdateTransactionModal categories={userCategories}/>
           <RegisterModal />
           <LoginModal />

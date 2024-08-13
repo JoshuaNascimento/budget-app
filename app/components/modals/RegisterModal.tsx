@@ -17,11 +17,14 @@ import Input from '../inputs/Input';
 import toast from 'react-hot-toast';
 import Button from '../Button';
 import useLoginModal from '@/app/hooks/useLoginModal';
+import { useRouter } from 'next/navigation';
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const {
     register,
@@ -42,6 +45,7 @@ const RegisterModal = () => {
 
     axios.post('api/register', data)
       .then(() => {
+        toast.success("Sucessfully created account!")
         registerModal.onClose();
       })
       .catch((error: any) => {
@@ -49,6 +53,7 @@ const RegisterModal = () => {
       })
       .finally(() => {
         setIsLoading(false);
+        router.refresh()
       })
   }
 

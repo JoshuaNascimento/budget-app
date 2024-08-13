@@ -1,15 +1,15 @@
 import { create } from 'zustand';
 
-interface CreateTransactionModalStore {
+interface RecordTransactionModal {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
 }
 
-const useCreateTransactionModal = create<CreateTransactionModalStore>((set) => ({
+const RecordTransactionModal = create<RecordTransactionModal>((set) => ({
   isOpen: false,
   onOpen: () => set({isOpen: true}),
   onClose: () => set({isOpen: false}),
 }))
  
-export default useCreateTransactionModal;
+export default RecordTransactionModal;

@@ -35,19 +35,25 @@ const Dashboard: React.FC<DashboardProps> =  ({transactions, categories}) => {
   const incomesArray = dictionaryToArrayofObjects(incomesDictionary)
 
   return ( 
-    <div className='grid grid-cols-2 gap-2'>
-      <DonutChart
-        data={expensesArray}
-        index="key"
-        key="expenses"
-        colors={['blue-900', 'blue-800', 'blue-700', 'blue-600', 'blue-500', 'blue-400', ]}
-      />
-      <DonutChart
-        data={incomesArray}
-        index="key"
-        key="income"
-      />
+    <>
+    <div className='grid grid-cols-3 gap-2 bg-slate-200'>
+      <div>
+        <DonutChart
+          data={expensesArray}
+          index="key"
+          key="expenses"
+          colors={['blue-900', 'blue-800', 'blue-700', 'blue-600', 'blue-500', 'blue-400', ]}
+        />
+      </div>
+      <div>
+        <DonutChart
+          data={incomesArray}
+          index="key"
+          key="income"
+        />
+      </div>
     </div>
+    </>
   );
 }
  

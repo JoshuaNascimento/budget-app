@@ -16,13 +16,16 @@ export default async function getUserCategories() {
       return null;
     }
 
-    const userCategories = await prisma.budget.findFirst({
+    const userCategories = await prisma.transactionCategories.findFirst({
       where: {
         user: session.user
       },
-      select: { category: true }
+      select: { 
+        expense: true,
+        income: true
+       }
     });
-    return userCategories?.category;
+    return userCategories;
   } catch (error: any) {
     return null;
   }

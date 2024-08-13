@@ -30,7 +30,8 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
   const [show, setShow] = useState(false); // Display DatePicker
   const [selectedDate, setSelectedDate] = useState(data.date)
   const [selectedCategory, setSelectedCategory] = useState(data.category)
-  
+  const [isExpense, setIsExpense] = useState(true)
+
 	const dateHandleChange = (selectedDate: any) => { 
     setSelectedDate(selectedDate)
 	}
@@ -100,11 +101,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
   const updateTransaction: SubmitHandler<FieldValues> = async (updateData) => {
     //setIsLoading(true)
     updateData.id = data.id
-    if (data.debitAmount > 0) {
-      updateData.category = "Other"
-    } else {
-      updateData.category = "Job"
-    }
+    updateData.category = "Non-Specified"
     updateData.date = selectedDate
     
     if (updateData.creditAmount <= 0 && updateData.debitAmount <= 0) {
@@ -147,6 +144,20 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
         title ="Update a Transaction"
       />
 
+      <Select required value={selectedCategory} id="category" onChange={(e) => handleSelect(e)}>
+          <option>Select a category</option>
+          {/* Conditionally render categories based on if the user is inputting an expense or income */}
+          {isExpense ?
+              categories.expense.map( (updateExpenseItem: any) => (
+                <option key={updateExpenseItem.id} value={updateExpenseItem.id}>{updateExpenseItem}</option>
+              ))
+            :
+            categories.income.map( (updateIncomeItem: any) => (
+              <option key={updateIncomeItem.id} value={updateIncomeItem.id}>{updateIncomeItem}</option>
+            ))
+          }
+      </Select>
+
       <Datepicker options={options} onChange={dateHandleChange} show={show} setShow={dateHandleClose} />
         
       <Input 
@@ -160,10 +171,10 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = ({categori
 
       <Select value={selectedCategory} id="category" onChange={(e) => handleSelect(e)}>
         <option>Select a category</option>
-        {categories.map( (item: any) => (
+        {/*categories.map( (item: any) => (
           // TODO: if check item to see if it equals the category already assigned to the transaction, make it selected if true
           <option key={item.id} value={item.id}>{item}</option>
-        ))}
+        ))*/}
       </Select>
       
       {data.debitAmount > 0 ? 

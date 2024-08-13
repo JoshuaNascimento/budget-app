@@ -24,7 +24,8 @@ export async function POST(
     })
     
     // Generate budget schema on user creation
-    const budget = await prisma.budget.create({
+    
+    const transactionCategories = await prisma.transactionCategories.create({
       data : {
         userId: user.id
       }

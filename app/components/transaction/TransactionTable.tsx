@@ -59,7 +59,12 @@ const TransactionTable: React.FC<TransactionTableProps> = ({transactions}) => {
             />
           ))}
 
-          <Pagination currentPage={currentPage} totalPages={getPageNumbers()} onPageChange={onPageChange}/>
+          {currentPage <= 1 ? 
+              ""
+            :
+            <Pagination currentPage={currentPage} totalPages={getPageNumbers()} onPageChange={onPageChange}/>
+          }
+          
       </table>
   );
 }

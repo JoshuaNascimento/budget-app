@@ -23,48 +23,12 @@ model User {
   hashedPassword String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  //favoriteIds String[] @db.ObjectId Video specific variable
-
-  //socialAccounts SocialAccount[]
-  //accounts Account[]
   transactions Transaction[]
   budget Budget[]
+  expenses Expenses[]
+  incomes Incomes[]
+  categories TransactionCategories[]
 }
-
-model SocialAccount {
-  id String @id @default(auto()) @map("_id")  @db.ObjectId
-  userId String @db.ObjectId
-  type String
-  provider String
-  providerAccountId String
-  refresh_token String? @db.String
-  access_token String? @db.String
-  expires_at Int?
-  token_type String?
-  scope String?
-  id_token String? @db.String
-  session_state String?
-
-  // Create a relation with the User model using the userId field of Account to reference to the id field of User model
-  //user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
-
-  // Using double @@ we specify we require a unique combination of both fields
-  @@unique([provider, providerAccountId])
-}
-
-
-model Account {
-  id String @id @default(auto()) @map("_id")  @db.ObjectId
-  title String
-  description String
-  createdAt DateTime @default(now())
-  balance Float
-  userId String @db.ObjectId
-
-  //user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
-  //transactions Transaction[]
-} 
-
 
 model Transaction {
   id String @id @default(auto()) @map("_id")  @db.ObjectId
@@ -85,5 +49,46 @@ model Budget {
   allocation Float? @default(0)
   spent Float? @default(0)
   userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Expenses {
+  id String @id @default(auto()) @map("_id")  @db.ObjectId
+  userId String @db.ObjectId
+  description String
+  category String
+  date DateTime @db.Date @default(now())
+  amount Float
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ExpensesBin {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+}
+
+model Incomes {
+  id String @id @default(auto()) @map("_id")  @db.ObjectId
+  userId String @db.ObjectId
+  description String
+  category String
+  date DateTime @db.Date @default(now())
+  amount Float
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model IncomeBin {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+}
+
+model TransactionCategories {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  expense String[] @default(["Housing", "Transportation", "Grocery", "Eating Out", "Utilities", "Insurance", "Healthcare", "Debt", "Going Out", "Personal Spending", "Subscriptions"])
+  income String[] @default(["Job", "Selling", "Side Job"])
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
